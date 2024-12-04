@@ -1,0 +1,23 @@
+---
+layout: default
+title: (💩) Posts
+---
+
+{%- assign posts = site.posts -%}
+{%- assign date_format = "%b %-d, %Y" -%}
+
+<ul>
+    {%- for post in posts -%}
+    <li>
+        <span>{{ post.date | date: date_format }}</span>
+        <h2>
+            <a href="{{ post.url | relative_url }}">
+                {{ post.title | escape }}
+            </a>
+        </h2>
+        {%- if site.show_excerpts -%}
+        {{ post.excerpt }}
+        {%- endif -%}
+    </li>
+    {%- endfor -%}
+</ul>
