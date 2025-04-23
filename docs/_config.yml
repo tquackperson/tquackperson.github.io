@@ -28,6 +28,10 @@ url: "https://tquackperson.com" # the base hostname & protocol for your site, e.
 twitter_username:
 github_username: tquackperson
 
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+
 # Build settings
 # theme: minima
 remote_theme: pages-themes/leap-day@v0.2.0
