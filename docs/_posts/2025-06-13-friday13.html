@@ -1,0 +1,24 @@
+---
+title: It's Friday the 13th
+date: 2025-06-13
+layout: post
+excerpt: It's Friday the 13th
+---
+
+<p class="early">Spoooooky! You're seeing a <em>sneak preview</em>!</p>
+<p>It's Friday the 13th! Be scared.</p>
+
+<script>
+    const date20250613 = new Date("2025-06-13T00:00Z");
+    const offset = date20250613.getTimezoneOffset();
+    const midnight = new Date(date20250613.valueOf() + offset * 60000);
+    const now = new Date();
+
+    if (now.valueOf() < midnight.valueOf()) {
+    } else {
+        const early = document.getElementsByClassName('early');
+        for (const el of early) {
+            el.style.display = 'none';
+        }
+    }
+</script>
