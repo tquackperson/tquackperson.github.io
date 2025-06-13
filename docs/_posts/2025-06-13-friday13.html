@@ -1,24 +1,130 @@
 ---
-title: It's Friday the 13th
+title: Is it Friday the 13th?
 date: 2025-06-13
 layout: post
-excerpt: It's Friday the 13th
+excerpt: Find out...
 ---
 
-<p class="early">Spoooooky! You're seeing a <em>sneak preview</em>!</p>
-<p>It's Friday the 13th! Be scared.</p>
+<div id="post-body">
+    <p>It<span id="result"></span> Friday the 13<sup id="th-superscript">th</sup><span id="punctuation"></span></p>
+</div>
 
-<script>
-    const date20250613 = new Date("2025-06-13T00:00Z");
-    const offset = date20250613.getTimezoneOffset();
-    const midnight = new Date(date20250613.valueOf() + offset * 60000);
-    const now = new Date();
+<style>
+    .spinme {
+        display: inline-block;
+        animation: spin 300s linear infinite;
+        white-space: pre;
+    }
 
-    if (now.valueOf() < midnight.valueOf()) {
-    } else {
-        const early = document.getElementsByClassName('early');
-        for (const el of early) {
-            el.style.display = 'none';
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
         }
     }
+</style>
+
+<script>
+    function spin(el) {
+        el.classList.add('spinme');
+    }
+
+    function boxAllCharacters(parent) {
+        const children = parent.childNodes;
+
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            switch (child.nodeType) {
+                case Node.ELEMENT_NODE: {
+                    boxAllCharacters(child);
+                }
+                case Node.TEXT_NODE: {
+                    // leaf
+                    const characters = child.textContent;
+
+                    if (!/[^\t\n\r ]/.test(characters)) {
+                        // all whitespace: ignore
+                        continue;
+                    }
+
+                    const container = document.createElement('span');
+
+                    for (const c of characters) {
+                        const el = document.createElement('span');
+                        const elContent = document.createTextNode(c);
+                        el.appendChild(elContent);
+                        spin(el);
+                        el.style['animation-duration'] = ((Math.random() - 0.5) * 240 + 1200).toString() + 's';
+                        el.style['animation-direction'] = (Math.random() < 0.5) ? 'normal' : 'reverse';
+                        el.style['animation-delay'] = (Math.random() * 60).toString() + 's';
+                        container.appendChild(el);
+                    }
+
+                    parent.replaceChild(container, child);
+                }
+                default:
+                // ignore
+            }
+        }
+    }
+
+    function spinEverything() {
+        const body = document.getElementById('post-body');
+        boxAllCharacters(body);
+    }
+
+    function flash(body) {
+        let interval;
+        let blinksRemaining = 5;
+        let on = false;
+        interval = setInterval(() => {
+            if (on) {
+                body.style.backgroundColor = '';
+                blinksRemaining--;
+            } else {
+                body.style.backgroundColor = 'lime';
+            }
+
+            on = !on;
+
+            if (blinksRemaining === 0) {
+                clearInterval(interval);
+                spinEverything();
+            }
+        }, 1000);
+    }
+
+    function update() {
+        const now = new Date();
+        const day = now.getDay();
+        const date = now.getDate();
+        const isFriday13th = day === 5 && date === 13;
+
+        const result = document.getElementById('result');
+        const punct = document.getElementById('punctuation');
+        const body = document.getElementById('post-body');
+        const th = document.getElementById('th-superscript');
+
+        if (isFriday13th) {
+            result.innerText = "'s";
+            punct.innerText = '!';
+            flash(body);
+            spin(th);
+        } else {
+            result.innerText = " is not";
+            punct.innerText = '.';
+        }
+
+        const midnight = new Date(now);
+        midnight.setDate(midnight.getDate() + 1);
+        midnight.setHours(0, 0, 0, 0);
+
+        const msToMidnight = midnight.valueOf() - now.valueOf();
+        setTimeout(update, msToMidnight);
+    }
+
+    update();
 </script>
